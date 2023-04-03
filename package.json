@@ -5,13 +5,37 @@
   "author": "bensigo <sigocode@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon --exec ts-node -r dotenv/config src/index.ts"
+    "dev": "nodemon --exec ts-node -r dotenv/config src/index.ts",
+    "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
+    "format": "prettier --write '**/*.{js,jsx,ts,tsx,json,md}'",
+    "precommit": "lint-staged"
   },
   "devDependencies": {
     "@types/node": "^18.15.11",
+    "@typescript-eslint/eslint-plugin": "^5.57.0",
+    "@typescript-eslint/parser": "^5.57.0",
     "dotenv": "^16.0.3",
+    "eslint": "^8.37.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.0",
     "nodemon": "^2.0.22",
+    "prettier": "^2.8.7",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.3"
-  }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,md}": [
+      "yarn lint",
+      "yarn format",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn precommit"
+    }
+  }  
 }
