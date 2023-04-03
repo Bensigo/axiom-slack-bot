@@ -28,8 +28,9 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,md}": [
-      "yarn lint",
-      "yarn format",
+      "yarn install",
+      "eslint --fix",
+      "prettier --write",
       "git add"
     ]
   },
