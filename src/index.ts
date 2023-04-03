@@ -1,3 +1,7 @@
-console.log("Hello world yfdyf");
 
-console.log('testing')
+
+function test(){
+    console.log("Hello world yfdyf");  
+}
+
+test()
