@@ -1,0 +1,22 @@
+# Node.js and TypeScript files
+node_modules/
+dist/
+
+# Environment variables
+.env
+
+# Logs
+logs
+*.log
+
+# Other build files
+yarn-error.log
+yarn.lock
+
+# IDE files
+.vscode/
+.idea/
+
+# Miscellaneous
+.DS_Store
+Thumbs.db
