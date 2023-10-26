@@ -44,14 +44,9 @@ async function getCompanyInstall(command: any) {
   return install;
 }
 
-async function getUserById(userId: string){
+async function getUserById(userId: string) {
   return userService.findOne({ userId });
 }
-
-
-
-
-
 
 async function listAxiomDataset(client: Client | undefined, say: any) {
   if (!client) {
@@ -83,113 +78,82 @@ export async function axiomCommand(app: App) {
     try {
       await ack();
       const user = await getUserById(body.user_id);
-      
-      if (!user){
-        console.log("got here");
-       // create a pop up asking user to save their axiom token and orgId
-       await client.views.open({
-         trigger_id: body.trigger_id,
-         view: userCredView
-       });
-       return;
 
+      if (!user) {
+        console.log("got here");
+        // create a pop up asking user to save their axiom token and orgId
+        await client.views.open({
+          trigger_id: body.trigger_id,
+          view: userCredView,
+        });
+        return;
       }
       const { axiomOrgId, axiomToken } = user as userDocument;
-        const commandService = new CommandService(
-          client,
-          axiomToken,
-          axiomOrgId
-        );
+      const commandService = new CommandService(client, axiomToken, axiomOrgId);
 
-        const isListDatasetCommand = command.text.startsWith("datasets");
-        const isQuery = command.text.startsWith("query");
-        if (isListDatasetCommand) {
-          // handle list command
-          await commandService.listDataset(body.channel_id);
+      const isListDatasetCommand = command.text.startsWith("datasets");
+      const isQuery = command.text.startsWith("query");
+      if (isListDatasetCommand) {
+        // handle list command
+        await commandService.listDataset(body.channel_id);
+        return;
+      }
+
+      if (isQuery) {
+        const query = body.text.split("query")[1]?.trim();
+        const response = await commandService.queryDataset(
+          body.channel_id,
+          query
+        );
+        // from response find out if is a chart or table
+        if (!response) {
+          say("No result found");
           return;
         }
 
-        if (isQuery) {
-          const query = body.text.split("query")[1]?.trim();
-          const isChartCompactable = query.includes("summarize");
-          const response = await commandService.queryDataset(
-            body.channel_id,
-            query
-          );
-          if (response) {
-            if (isChartCompactable) {
-              // Split response.buckets.series into batches of 20 items each
-              // const batches = [];
-              // const batchSize = 20;
-              const chartData = commandService.prepareData(response.buckets.series)
-              if (chartData){
-                const buffer = await createChartBuffer({
-                  data: chartData,
-                  type: "line",
-                  options: chartOptions as any,
-                 });
-                  await client.files.upload({
-                  channels: body.channel_id,
-                  file: buffer,
-                  filename: `chart.png`,
-                });
-                return;
-              }
-              // for (let i = 0; i < (response?.buckets.series?.length as number); i += batchSize) {
-              //   const batch = response.buckets.series?.slice(i, i + batchSize);
-              //   batches.push(batch);
-              // }
-
-              // const charts = batches.map(async (batch, index) => {
-              //   const chartData = commandService.prepareData(batch)
-              //   if (chartData){
-              //     const buffer = await createChartBuffer({
-              //       data: chartData,
-              //       type: "line",
-              //       options: chartOptions as any,
-              //      });
-              //      return client.files.upload({
-              //       channels: body.channel_id,
-              //       file: buffer,
-              //       filename: `chart-${index}.png`,
-              //     });
-              //   }
-              //   return
-              // });
-              // await Promise.all(charts);
-            } else {
-              
-              if (response?.matches?.length === 0) {
-                say('No result found')
-                return
-              }
-              // Split response.matches into batches of 8 items each  
-              const batches = [];
-              const batchSize = 8;
-              for (let i = 0; i < (response?.matches?.length as number);  i += batchSize) {
-                const batch = response.matches?.slice(i, i + batchSize);
-                batches.push(batch);
-              }
-
-              const tables = batches.map(async (batch, index) => {
-
-                const buffer = await createTableBuffer(batch);
-                return client.files.upload({
-                  channels: body.channel_id,
-                  file: buffer,
-                  filename: `table-${index}.png`
-                })
-              })
-
-               await Promise.all(tables)
-            }
+        if (response.buckets.series?.length ) {
+          const chartData = commandService.prepareData(response.buckets.series);
+          if (chartData) {
+            const buffer = await createChartBuffer({
+              data: chartData,
+              type: "line",
+              options: chartOptions as any,
+            });
+            await client.files.upload({
+              channels: body.channel_id,
+              file: buffer,
+              filename: `chart.png`,
+            });
+          }
+        }
+        if (response?.matches) {
+          const batches = [];
+          const batchSize = 8;
+          for (
+            let i = 0;
+            i < (response?.matches?.length as number);
+            i += batchSize
+          ) {
+            const batch = response.matches?.slice(i, i + batchSize);
+            batches.push(batch);
           }
 
-          return;
-        }
+          const tables = batches.map(async (batch, index) => {
+            const buffer = await createTableBuffer(batch);
+            return client.files.upload({
+              channels: body.channel_id,
+              file: buffer,
+              filename: `table-${index}.png`,
+            });
+          });
 
-        say(defaultMsg);
-      
+          await Promise.all(tables);
+        }
+        return;
+      }
+
+      say(defaultMsg);
+
     } catch (err) {
       console.log({ err }, "-----");
     }
