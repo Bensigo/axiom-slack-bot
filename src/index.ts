@@ -1,12 +1,20 @@
+import { App } from '@slack/bolt';
 import * as dotenv from 'dotenv'
+import appConfig from './config'
+import { app } from './app';
+import { connectToDb } from './config/db';
 
 dotenv.config()
 
-function test(){
-    const port = process.env.PORT
-    const appName = process.env.APP_NAME
-    console.log("Hello world yfdyf");  
-    console.log(`${appName} on  ${port}`)
-}
+const port = appConfig.port;
 
-test()
+export async function createBotServer(app: App, port: number){
+    await app.start(port)
+    console.log("⚡️ Bolt app is running on port:", port);
+ }
+
+// start bot server
+(async () => {
+   await  createBotServer(app, port);
+   await connectToDb()
+})();

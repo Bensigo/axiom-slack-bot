@@ -5,12 +5,17 @@
   "author": "bensigo <sigocode@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon --exec ts-node -r dotenv/config src/index.ts",
+    "dev": "nodemon --esm --exec ts-node -r dotenv/config src/index.ts",
     "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
     "format": "prettier --write '**/*.{js,jsx,ts,tsx,json,md}'",
     "precommit": "lint-staged"
   },
   "devDependencies": {
+    "@types/body-parser": "^1.19.2",
+    "@types/cors": "^2.8.13",
+    "@types/express": "^4.17.17",
+    "@types/jsdom": "^21.1.1",
+    "@types/mongoose": "^5.11.97",
     "@types/node": "^18.15.11",
     "@typescript-eslint/eslint-plugin": "^5.57.0",
     "@typescript-eslint/parser": "^5.57.0",
@@ -38,5 +43,20 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
-  }  
+  },
+  "dependencies": {
+    "@axiomhq/axiom-node": "^0.11.0",
+    "@slack/bolt": "^3.12.2",
+    "body-parser": "^1.20.2",
+    "canvas": "^2.11.2",
+    "chart.js": "^3.5.1",
+    "chartjs-node-canvas": "^4.1.6",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "html-to-image": "^1.11.11",
+    "jsdom": "^21.1.1",
+    "markdown-table": "^3.0.3",
+    "mongoose": "^7.0.3",
+    "node-html-to-image": "^3.3.0"
+  }
 }

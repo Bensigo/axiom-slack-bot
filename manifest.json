@@ -1,0 +1,81 @@
+{
+    "display_information": {
+        "name": "axiom"
+    },
+    "features": {
+        "app_home": {
+            "home_tab_enabled": true,
+            "messages_tab_enabled": false,
+            "messages_tab_read_only_enabled": false
+        },
+        "bot_user": {
+            "display_name": "axiom",
+            "always_online": false
+        },
+        "slash_commands": [
+            {
+                "command": "/axiom",
+                "url": "https://5005-94-204-52-199.ngrok-free.app/slack/events",
+                "description": "show usage of app",
+                "should_escape": false
+            }
+        ]
+    },
+    "oauth_config": {
+        "redirect_urls": [
+            "https://5005-94-204-52-199.ngrok-free.app/slack/oauth_redirect"
+        ],
+        "scopes": {
+            "user": [
+                "chat:write",
+                "im:history",
+                "im:read",
+                "im:write",
+                "channels:read",
+                "channels:history",
+                "channels:write",
+                "team:read",
+                "groups:history",
+                "links:write",
+                "mpim:history",
+                "mpim:read",
+                "mpim:write",
+                "files:write"
+            ],
+            "bot": [
+                "app_mentions:read",
+                "chat:write",
+                "commands",
+                "im:history",
+                "im:read",
+                "im:write",
+                "channels:read",
+                "channels:history",
+                "channels:join",
+                "team:read",
+                "incoming-webhook",
+                "groups:history",
+                "links:write",
+                "mpim:history",
+                "mpim:read",
+                "mpim:write",
+                "files:write"
+            ]
+        }
+    },
+    "settings": {
+        "event_subscriptions": {
+            "request_url": "https://5005-94-204-52-199.ngrok-free.app/slack/events",
+            "bot_events": [
+                "app_home_opened"
+            ]
+        },
+        "interactivity": {
+            "is_enabled": true,
+            "request_url": "https://5005-94-204-52-199.ngrok-free.app/slack/events"
+        },
+        "org_deploy_enabled": false,
+        "socket_mode_enabled": false,
+        "token_rotation_enabled": false
+    }
+}
